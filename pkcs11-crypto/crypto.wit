@@ -421,6 +421,58 @@ interface crypto {
     abort: func() -> result<_, error-code>;
   }
 
+  /// Dual-purpose digest-encrypt streaming operation (C_DigestEncryptUpdate).
+  /// Combines message digesting and encryption in a single operation.
+  /// Note: Rarely used in practice; most applications use separate digest and encrypt operations.
+  resource digest-encryptor {
+    /// Update both digest and encryption with a data chunk.
+    update: func(part: chunk) -> result<bytes, error-code>;
+    /// Finalize the digest operation.
+    digest-final: func() -> result<bytes, error-code>;
+    /// Finalize the encryption operation.
+    encrypt-final: func(max-size: u32) -> result<bytes, error-code>;
+    abort: func() -> result<_, error-code>;
+  }
+
+  /// Dual-purpose decrypt-digest streaming operation (C_DecryptDigestUpdate).
+  /// Combines decryption and message digesting in a single operation.
+  /// Note: Rarely used in practice; most applications use separate decrypt and digest operations.
+  resource decrypt-digester {
+    /// Update both decryption and digest with a data chunk.
+    update: func(part: chunk) -> result<bytes, error-code>;
+    /// Finalize the decryption operation.
+    decrypt-final: func(max-size: u32) -> result<bytes, error-code>;
+    /// Finalize the digest operation.
+    digest-final: func() -> result<bytes, error-code>;
+    abort: func() -> result<_, error-code>;
+  }
+
+  /// Dual-purpose sign-encrypt streaming operation (C_SignEncryptUpdate).
+  /// Combines signature generation and encryption in a single operation.
+  /// Note: Rarely used in practice; most applications use separate sign and encrypt operations.
+  resource sign-encryptor {
+    /// Update both signing and encryption with a data chunk.
+    update: func(part: chunk) -> result<bytes, error-code>;
+    /// Finalize the signing operation.
+    sign-final: func() -> result<bytes, error-code>;
+    /// Finalize the encryption operation.
+    encrypt-final: func(max-size: u32) -> result<bytes, error-code>;
+    abort: func() -> result<_, error-code>;
+  }
+
+  /// Dual-purpose decrypt-verify streaming operation (C_DecryptVerifyUpdate).
+  /// Combines decryption and signature verification in a single operation.
+  /// Note: Rarely used in practice; most applications use separate decrypt and verify operations.
+  resource decrypt-verifier {
+    /// Update both decryption and verification with a data chunk.
+    update: func(part: chunk) -> result<bytes, error-code>;
+    /// Finalize the decryption operation.
+    decrypt-final: func(max-size: u32) -> result<bytes, error-code>;
+    /// Finalize the verification operation with the signature.
+    verify-final: func(signature: bytes) -> result<_, error-code>;
+    abort: func() -> result<_, error-code>;
+  }
+
   /// Result from a key derivation flow.
   record derived-key {
     base: object-handle,
