@@ -277,21 +277,21 @@ interface crypto {
   }
 
   /// X9.42 DH domain parameters.
-  record x9-42-dh-params {
+  record x942-dh-params {
     prime: bytes,
     base: bytes,
     subprime: bytes,
   }
 
   /// X9.42 DH key derivation parameters.
-  record x9-42-dh1-derive-param {
+  record x942-dh1-derive-param {
     kdf: mechanism-type,
     other-info: bytes,
     public-data: bytes,
   }
 
   /// X9.42 DH MQV derivation parameters.
-  record x9-42-mqv-derive-param {
+  record x942-mqv-derive-param {
     kdf: mechanism-type,
     other-info: bytes,
     public-key: object-handle,
@@ -372,9 +372,9 @@ interface crypto {
     key-wrap-set-oaep(key-wrap-set-oaep-param),
     // DH mechanisms
     dh-params(dh-params),
-    x9-42-dh-params(x9-42-dh-params),
-    x9-42-dh1-derive(x9-42-dh1-derive-param),
-    x9-42-mqv-derive(x9-42-mqv-derive-param),
+    x942-dh-params(x942-dh-params),
+    x942-dh1-derive(x942-dh1-derive-param),
+    x942-mqv-derive(x942-mqv-derive-param),
     // DSA
     dsa-parameter-gen(dsa-parameter-gen-param),
     // GOST
