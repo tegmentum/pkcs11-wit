@@ -3,7 +3,7 @@ package pkcs11:session;
 interface session {
   use pkcs11:buffer/buffer.{bytes};
   use pkcs11:core/core.{attribute-template, error-code, mechanism, object-handle, output-buffer, session-flags, session-state, slot-id, user-type, vendor-user-type};
-  use pkcs11:crypto/crypto.{decryptor, decrypt-digester, decrypt-verifier, digest-encryptor, digester, encryptor, sign-encryptor, signer, verifier};
+  use pkcs11:crypto/crypto.{decryptor, digester, encryptor, signer, verifier};
   use pkcs11:object/object.{object, search};
   use pkcs11:util/util.{credential};
 
@@ -94,26 +94,6 @@ interface session {
 
     /// Initialize a multipart digest context.
     digest-init: func(mechanism: mechanism) -> result<digester, error-code>;
-
-    /// Initialize a dual-purpose digest-encrypt operation (C_DigestEncryptUpdate).
-    /// Combines message digesting and encryption in a single streaming operation.
-    /// Note: Rarely used; consider using separate digest and encrypt operations for clarity.
-    digest-encrypt-init: func(digest-mechanism: mechanism, encrypt-mechanism: mechanism, key: borrow<object>) -> result<digest-encryptor, error-code>;
-
-    /// Initialize a dual-purpose decrypt-digest operation (C_DecryptDigestUpdate).
-    /// Combines decryption and message digesting in a single streaming operation.
-    /// Note: Rarely used; consider using separate decrypt and digest operations for clarity.
-    decrypt-digest-init: func(decrypt-mechanism: mechanism, digest-mechanism: mechanism, key: borrow<object>) -> result<decrypt-digester, error-code>;
-
-    /// Initialize a dual-purpose sign-encrypt operation (C_SignEncryptUpdate).
-    /// Combines signature generation and encryption in a single streaming operation.
-    /// Note: Rarely used; consider using separate sign and encrypt operations for clarity.
-    sign-encrypt-init: func(sign-mechanism: mechanism, encrypt-mechanism: mechanism, sign-key: borrow<object>, encrypt-key: borrow<object>) -> result<sign-encryptor, error-code>;
-
-    /// Initialize a dual-purpose decrypt-verify operation (C_DecryptVerifyUpdate).
-    /// Combines decryption and signature verification in a single streaming operation.
-    /// Note: Rarely used; consider using separate decrypt and verify operations for clarity.
-    decrypt-verify-init: func(decrypt-mechanism: mechanism, verify-mechanism: mechanism, decrypt-key: borrow<object>, verify-key: borrow<object>) -> result<decrypt-verifier, error-code>;
 
     /// Generate a secret or public object using the provided template.
     generate-key: func(mechanism: mechanism, template: attribute-template) -> result<object, error-code>;

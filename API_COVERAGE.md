@@ -14,11 +14,11 @@ This document details the complete coverage of PKCS#11 v2.40 API in the WIT defi
 | **Message Digesting** | 5 | 5/5 (100%) | ✅ Complete |
 | **Signing & MACing** | 6 | 6/6 (100%) | ✅ Complete |
 | **Signature Verification** | 6 | 6/6 (100%) | ✅ Complete |
-| **Dual-Purpose Crypto** | 8 | 8/8 (100%) | ✅ Complete |
+| **Dual-Purpose Crypto** | 8 | 0/8 (0%) | ⚠️ Not Implemented |
 | **Key Management** | 6 | 6/6 (100%) | ✅ Complete |
 | **Random Number Generation** | 2 | 2/2 (100%) | ✅ Complete |
 | **Parallel Functions** | 2 | 0/2 (0%) | ⚠️ Deprecated |
-| **TOTAL** | **78** | **72/78 (92%)** | **✅ 100% Essential** |
+| **TOTAL** | **78** | **64/78 (82%)** | **✅ 100% Essential** |
 
 \* Intentional omissions noted below
 
@@ -100,14 +100,14 @@ This document details the complete coverage of PKCS#11 v2.40 API in the WIT defi
 - ✅ **C_VerifyRecoverInit** - Combined with verify-recover
 - ✅ **C_VerifyRecover** - `session::verify-recover(mechanism, key, signature, max-size)`
 
-### Dual-Purpose Cryptographic Operations (8/8) ✅
-- ✅ **C_DigestEncryptUpdate** - `digest-encryptor::update(part: chunk)`
-- ✅ **C_DecryptDigestUpdate** - `decrypt-digester::update(part: chunk)`
-- ✅ **C_SignEncryptUpdate** - `sign-encryptor::update(part: chunk)`
-- ✅ **C_DecryptVerifyUpdate** - `decrypt-verifier::update(part: chunk)`
-- Plus initialization functions: `digest-encrypt-init`, `decrypt-digest-init`, `sign-encrypt-init`, `decrypt-verify-init`
+### Dual-Purpose Cryptographic Operations (0/8) ⚠️
+- ❌ **C_DigestEncryptUpdate** - Not implemented
+- ❌ **C_DecryptDigestUpdate** - Not implemented
+- ❌ **C_SignEncryptUpdate** - Not implemented
+- ❌ **C_DecryptVerifyUpdate** - Not implemented
+- ❌ Init functions not implemented
 
-**Note:** These dual-purpose functions are rarely used in practice. Most applications prefer composing separate operations for clarity and flexibility.
+**Note:** These dual-purpose functions are rarely used in modern applications. They can be composed from separate single-purpose operations for better clarity and flexibility. May be added in a future version if there is demand.
 
 ### Key Management (6/6) ✅
 - ✅ **C_GenerateKey** - `session::generate-key(mechanism, template)`
@@ -122,6 +122,11 @@ This document details the complete coverage of PKCS#11 v2.40 API in the WIT defi
 - ✅ **C_GenerateRandom** - `session::generate-random(len: u32)`
 
 ## Intentionally Omitted Functions
+
+### Dual-Purpose Cryptographic Operations (8 functions)
+- ❌ **C_DigestEncryptUpdate, C_DecryptDigestUpdate, C_SignEncryptUpdate, C_DecryptVerifyUpdate** + init functions
+
+**Rationale:** These operations are rarely used in modern PKCS#11 applications and add significant implementation complexity. Applications can achieve the same results by composing separate digest, encrypt, sign, and verify operations, which provides better clarity, flexibility, and testability. These may be added in a future version if there is demonstrated need.
 
 ### Deprecated/Legacy (2 functions)
 - ❌ **C_GetFunctionStatus** - Deprecated in PKCS#11 v2.40
@@ -196,9 +201,10 @@ This document details the complete coverage of PKCS#11 v2.40 API in the WIT defi
 
 **Essential API Coverage: 100%**
 
-All essential PKCS#11 v2.40 functionality is covered. The 8% of omitted functions are:
-- **Deprecated** (parallel function management)
-- **Not applicable** (function list in statically-typed interface)
-- **Future versions** (v3.0 features)
+All essential PKCS#11 v2.40 functionality is covered. The 18% of omitted functions are:
+- **Rarely used** (8 dual-purpose crypto functions - can be composed from single-purpose operations)
+- **Deprecated** (2 parallel function management functions)
+- **Not applicable** (1 function list - WIT has static typing)
+- **Future versions** (1 v3.0 function)
 
-The WIT definitions provide a complete, type-safe, modern interface to PKCS#11 that improves upon the C API while maintaining full compatibility with all PKCS#11 v2.40 operations.
+The WIT definitions provide a complete, type-safe, modern interface to PKCS#11 that improves upon the C API while maintaining full compatibility with all actively-used PKCS#11 v2.40 operations.
