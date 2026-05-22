@@ -7,7 +7,7 @@ interface object {
   /// Resource wrapper around a CK_OBJECT_HANDLE.
   resource object {
     /// Retrieve the raw handle for diagnostics or interoperability.
-    handle: func() -> object-handle;
+    get-handle: func() -> object-handle;
 
     /// Return the size in bytes of the object on the token.
     get-size: func() -> result<u64, error-code>;
