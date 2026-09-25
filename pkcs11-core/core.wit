@@ -251,8 +251,8 @@ interface core {
     mechanism-flags: mechanism-flags,
   }
 
-  /// Provides a typed view over boolean PKCS#11 attributes.
-  variant attribute-value {
+  /// Raw attribute payload typed according to CK_ATTRIBUTE_TYPE.
+  variant attribute-payload {
     boolean(bool),
     uint32(u32),
     uint64(u64),
@@ -262,6 +262,13 @@ interface core {
     key-kind(key-type),
     object-kind(object-class),
     vendor-bytes(bytes),
+  }
+
+  /// Attribute metadata combines payload, length hints, and truncation status.
+  record attribute-value {
+    payload: attribute-payload,
+    length-hint: option<u64>,
+    partial: bool,
   }
 
   /// Attribute template entry used for create/copy/find/search.

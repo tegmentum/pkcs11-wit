@@ -193,8 +193,23 @@ interface crypto {
     random-info: bytes,
   }
 
+  /// TLS master key derivation parameters (CK_TLS_MASTER_KEY_DERIVE_PARAMS).
+  record tls-master-key-derive-param {
+    client-version: tuple<u8, u8>,
+    random-info: bytes,
+  }
+
   /// SSL3/TLS key and MAC derivation parameters.
   record ssl3-key-mat-param {
+    mac-size-bits: u32,
+    key-size-bits: u32,
+    iv-size-bits: u32,
+    is-export: bool,
+    random-info: bytes,
+  }
+
+  /// TLS key material derivation parameters (CK_TLS_KEY_MAT_PARAMS).
+  record tls-key-mat-param {
     mac-size-bits: u32,
     key-size-bits: u32,
     iv-size-bits: u32,
@@ -346,6 +361,8 @@ interface crypto {
     ssl3-pre-master-key-gen(ssl3-pre-master-key-gen-param),
     ssl3-master-key-derive(ssl3-master-key-derive-param),
     ssl3-key-mat(ssl3-key-mat-param),
+    tls-master-key-derive(tls-master-key-derive-param),
+    tls-key-mat(tls-key-mat-param),
     tls12-mac(tls12-mac-param),
     tls12-kdf(tls12-kdf-param),
     tls12-master-key-derive(tls12-master-key-derive-param),
@@ -421,11 +438,9 @@ interface crypto {
     abort: func() -> result<_, error-code>;
   }
 
-  // Note: Dual-purpose cryptographic operations (C_DigestEncryptUpdate,
-  // C_DecryptDigestUpdate, C_SignEncryptUpdate, C_DecryptVerifyUpdate) are
-  // intentionally omitted. These are rarely used in modern applications and
-  // can be composed from separate single-purpose operations for better clarity
-  // and flexibility. They may be added in a future version if there is demand.
+  // Dual-purpose cryptographic updates (digest+encrypt, decrypt+digest, sign+encrypt,
+  // decrypt+verify) are surfaced on the `pkcs11:session/session` interface via the
+  // `*-update` helpers so guests can drive those legacy flows when required.
 
   /// Result from a key derivation flow.
   record derived-key {

@@ -1,7 +1,7 @@
 package pkcs11:session;
 
 interface session {
-  use pkcs11:buffer/buffer.{bytes};
+  use pkcs11:buffer/buffer.{bytes, chunk};
   use pkcs11:core/core.{attribute-template, error-code, mechanism, object-handle, output-buffer, session-flags, session-state, slot-id, user-type, vendor-user-type};
   use pkcs11:crypto/crypto.{decryptor, digester, encryptor, signer, verifier};
   use pkcs11:object/object.{object, search};
@@ -79,6 +79,18 @@ interface session {
 
     /// Perform a one-shot digest operation.
     digest: func(mechanism: mechanism, data: bytes) -> result<bytes, error-code>;
+
+    /// Update an active digest + encrypt operation.
+    digest-encrypt-update: func(part: chunk) -> result<bytes, error-code>;
+
+    /// Update an active decrypt + digest operation.
+    decrypt-digest-update: func(part: chunk) -> result<bytes, error-code>;
+
+    /// Update an active sign + encrypt operation.
+    sign-encrypt-update: func(part: chunk) -> result<bytes, error-code>;
+
+    /// Update an active decrypt + verify operation.
+    decrypt-verify-update: func(part: chunk) -> result<bytes, error-code>;
 
     /// Initialize a multipart encryption context.
     encrypt-init: func(mechanism: mechanism, key: borrow<object>) -> result<encryptor, error-code>;
